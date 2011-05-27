@@ -1,1 +1,96 @@
-My GitHub Page
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>SproutCore and jQuery UI</title>
+  <!--[if IE]>
+          <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.js"></script>
+  <script type="text/javascript" src="https://github.com/sproutcore/starter-kit/raw/master/js/libs/sproutcore-2.0.a.2.js"></script>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.js"></script>
+  <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/themes/base/jquery-ui.css" type="text/css" media="screen" title="no title" charset="utf-8">
+
+  <script type="text/javascript" charset="utf-8">
+  var availableTags = [
+        "ActionScript",
+        "AppleScript",
+        "Asp",
+        "BASIC",
+        "C",
+        "C++",
+        "Clojure",
+        "COBOL",
+        "ColdFusion",
+        "Erlang",
+        "Fortran",
+        "Groovy",
+        "Haskell",
+        "Java",
+        "JavaScript",
+        "Lisp",
+        "Perl",
+        "PHP",
+        "Python",
+        "Ruby",
+        "Scala",
+        "Scheme"
+      ];
+      
+  EB = SC.Object.create();
+  EB.AutocompleteTextField = SC.TextField.extend({
+    source: availableTags,
+    selectCallback: "Tags.tagsController.addTag", // TODO
+    placeholder: "Type a programming language",
+    insertNewline: function(event) { event.preventDefault(); },
+    didCreateElement: function() {
+      this.$('input').autocomplete({
+        source: this.get('source'),
+        // TODO: use a callback/binding configured directly on the SC control
+        select: function( event, ui ) {
+          if ( ui.item ) {
+            Tags.tagsController.addTag(ui.item.label);
+            event.target.value = '';
+            event.preventDefault();
+          }
+        },
+        focus: function( event, ui ) {
+          event.preventDefault();
+        }
+      });
+    }
+  });
+  Tags = SC.Application.create();
+  Tags.Tag = SC.Object.extend({
+    name: null
+  });
+  Tags.tagsController = SC.ArrayProxy.create({
+    content: [],
+    addTag: function(name) {
+      var tag = Tags.Tag.create({name: name});
+      this.pushObject(tag);
+    },
+    removeTag: function(e) {
+      this.removeObject(e.getPath('parentView.content'));
+    }
+  });
+  </script>
+  <style type="text/css" media="screen">
+    body { font-family: Helvetica; }
+    input[type=text] { width: 300px; font-size: 12pt; }
+  </style>
+</head>
+
+<body>
+  <h1>SproutCore 2.0 and jQuery UI example</h1>
+  
+  <h2>Autocomplete:</h2>
+  <script type="text/html">
+    {{view EB.AutocompleteTextField}}
+    {{#collection contentBinding="Tags.tagsController"}}
+      {{content.name}} {{#view SC.Button target="Tags.tagsController" action="removeTag"}}Remove{{/view}}
+    {{/collection}}
+  </script>
+</body>
+</html>
