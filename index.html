@@ -104,6 +104,12 @@
       }
     }.observes('value')
   });
+  EB.SortableCollectionView = SC.CollectionView.extend({
+    tagName: "ul",
+    didCreateElement: function() {
+      this.$().sortable().disableSelection();
+    }
+  });
   Demo = SC.Application.create();
   Demo.Tag = SC.Object.extend({
     name: null
@@ -118,7 +124,7 @@
       this.removeObject(e.getPath('parentView.content'));
     }
   });
-  Demo.progressBarController = SC.Object.create({
+  Demo.progressbarController = SC.Object.create({
     progress: 20
   });
   Demo.sliderController = SC.Object.create({
@@ -133,16 +139,17 @@
   <style type="text/css" media="screen">
     body { font-family: Helvetica; }
     input[type=text] { width: 300px; font-size: 12pt; }
+    .ui-sortable li { cursor: move; }
   </style>
 </head>
 
 <body>
   <h1>SproutCore 2.0 and jQuery UI example</h1>
   
-  <h2>Autocomplete:</h2>
+  <h2>Autocomplete w/ SortableCollectionView:</h2>
   <script type="text/html">
     {{view EB.AutocompleteTextField}}
-    {{#collection contentBinding="Demo.tagsController"}}
+    {{#collection EB.SortableCollectionView contentBinding="Demo.tagsController"}}
       {{content.name}} {{#view SC.Button target="Demo.tagsController" action="removeTag"}}Remove{{/view}}
     {{/collection}}
   </script>
@@ -154,9 +161,9 @@
   
   <h2>Progressbar:</h2>
   <script type="text/html">
-    {{view EB.Progressbar valueBinding="Demo.progressBarController.progress"}}
-    {{#view SC.TextField valueBinding="Demo.progressBarController.progress"}}
-      <input type="text" style="width: 30px" {{bindAttr value="Demo.progressBarController.progress"}}>%
+    {{view EB.Progressbar valueBinding="Demo.progressbarController.progress"}}
+    {{#view SC.TextField valueBinding="Demo.progressbarController.progress"}}
+      <input type="text" style="width: 30px" {{bindAttr value="Demo.progressbarController.progress"}}>%
     {{/view}}
   </script>
   
