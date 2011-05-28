@@ -41,7 +41,7 @@
   EB = SC.Object.create();
   EB.AutocompleteTextField = SC.TextField.extend({
     source: availableTags,
-    selectTarget: "Tags.tagsController",
+    selectTarget: "Demo.tagsController",
     selectAction: "addTag",
     placeholder: "Type a programming language",
     insertNewline: function(event) { event.preventDefault(); },
@@ -142,8 +142,8 @@
   <h2>Autocomplete:</h2>
   <script type="text/html">
     {{view EB.AutocompleteTextField}}
-    {{#collection contentBinding="Tags.tagsController"}}
-      {{content.name}} {{#view SC.Button target="Tags.tagsController" action="removeTag"}}Remove{{/view}}
+    {{#collection contentBinding="Demo.tagsController"}}
+      {{content.name}} {{#view SC.Button target="Demo.tagsController" action="removeTag"}}Remove{{/view}}
     {{/collection}}
   </script>
   
