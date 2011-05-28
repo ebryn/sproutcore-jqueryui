@@ -71,12 +71,37 @@
   });
   EB.Progressbar = SC.View.extend({
     value: null,
-    defaultTemplate: SC.Handlebars.compile('<div id="progressbar" style="width: 300px"></div>'),
+    defaultTemplate: SC.Handlebars.compile('<div style="width: 300px"></div>'),
     didCreateElement: function() {
       this.$("div:first").progressbar();
     },
     update: function() {
       this.$("div:first").progressbar("value", parseInt(this.get('value')));
+    }.observes('value')
+  });
+  EB.Slider = SC.View.extend({
+    value: 0,
+    min: 0,
+    max: 100,
+    step: 1,
+    defaultTemplate: SC.Handlebars.compile('<div style="width: 300px"></div>'),
+    didCreateElement: function() {
+      var self = this;
+      this.$("div:first").slider({
+        min: this.get('min'),
+        max: this.get('max'),
+        step: this.get('step'),
+        slide: function(event, ui) {
+          self.set('value', ui.value);
+        }
+      });
+    },
+    update: function() {
+      var old_value = this.$("div:first").slider("value"),
+          new_value = parseInt(this.get('value'));
+      if (old_value != new_value) {
+        this.$("div:first").slider("value", new_value);
+      }
     }.observes('value')
   });
   Demo = SC.Application.create();
@@ -95,6 +120,14 @@
   });
   Demo.progressBarController = SC.Object.create({
     progress: 20
+  });
+  Demo.sliderController = SC.Object.create({
+    value: 0
+  });
+  Demo.Slider = EB.Slider.extend({
+    valueBinding: "Demo.sliderController.value",
+    step: 10,
+    max: 50
   });
   </script>
   <style type="text/css" media="screen">
@@ -126,5 +159,14 @@
       <input type="text" style="width: 30px" {{bindAttr value="Demo.progressBarController.progress"}}>%
     {{/view}}
   </script>
+  
+  <h2>Slider:</h2>
+  <script type="text/html">
+    {{view Demo.Slider}}
+    {{#view SC.TextField valueBinding="Demo.sliderController.value"}}
+      <input type="text" style="width: 30px" {{bindAttr value="Demo.sliderController.value"}}>
+    {{/view}}
+  </script>
+  
 </body>
 </html>
