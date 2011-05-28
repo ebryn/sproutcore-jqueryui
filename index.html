@@ -41,16 +41,18 @@
   EB = SC.Object.create();
   EB.AutocompleteTextField = SC.TextField.extend({
     source: availableTags,
-    selectCallback: "Tags.tagsController.addTag", // TODO
+    selectTarget: "Tags.tagsController",
+    selectAction: "addTag",
     placeholder: "Type a programming language",
     insertNewline: function(event) { event.preventDefault(); },
     didCreateElement: function() {
+      var self = this;
       this.$('input').autocomplete({
         source: this.get('source'),
-        // TODO: use a callback/binding configured directly on the SC control
         select: function( event, ui ) {
           if ( ui.item ) {
-            Tags.tagsController.addTag(ui.item.label);
+            var target = SC.getPath(self.get('selectTarget'));
+            target[self.get('selectAction')].call(target, ui.item.value)
             event.target.value = '';
             event.preventDefault();
           }
