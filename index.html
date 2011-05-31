@@ -12,152 +12,9 @@
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.js"></script>
   <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/themes/base/jquery-ui.css" type="text/css" media="screen" title="no title" charset="utf-8">
 
+  <script type="text/javascript" src="sproutcore-jqueryui.js"></script>
+  <script type="text/javascript" src="demo.js"></script>
   <script type="text/javascript" charset="utf-8">
-  var availableTags = [
-        "ActionScript",
-        "AppleScript",
-        "Asp",
-        "BASIC",
-        "C",
-        "C++",
-        "Clojure",
-        "COBOL",
-        "ColdFusion",
-        "Erlang",
-        "Fortran",
-        "Groovy",
-        "Haskell",
-        "Java",
-        "JavaScript",
-        "Lisp",
-        "Perl",
-        "PHP",
-        "Python",
-        "Ruby",
-        "Scala",
-        "Scheme"
-      ];
-      
-  EB = SC.Object.create();
-  EB.AutocompleteTextField = SC.TextField.extend({
-    source: availableTags,
-    selectTarget: "Demo.tagsController",
-    selectAction: "addTag",
-    placeholder: "Type a programming language",
-    insertNewline: function(event) { event.preventDefault(); },
-    didCreateElement: function() {
-      var self = this;
-      this.$('input').autocomplete({
-        source: this.get('source'),
-        select: function( event, ui ) {
-          if ( ui.item ) {
-            var target = SC.getPath(self.get('selectTarget'));
-            target[self.get('selectAction')].call(target, ui.item.value)
-            event.target.value = '';
-            event.preventDefault();
-          }
-        },
-        focus: function( event, ui ) {
-          event.preventDefault();
-        }
-      });
-    }
-  });
-  EB.Datepicker = SC.TextField.extend({
-    placeholder: "",
-    didCreateElement: function() {
-      this.$('input').datepicker();
-    }
-  });
-  EB.Progressbar = SC.View.extend({
-    value: null,
-    defaultTemplate: SC.Handlebars.compile('<div style="width: 300px"></div>'),
-    didCreateElement: function() {
-      this.$("div:first").progressbar();
-    },
-    update: function() {
-      this.$("div:first").progressbar("value", parseInt(this.get('value')));
-    }.observes('value')
-  });
-  EB.Slider = SC.View.extend({
-    value: 0,
-    min: 0,
-    max: 100,
-    step: 1,
-    defaultTemplate: SC.Handlebars.compile('<div style="width: 300px"></div>'),
-    didCreateElement: function() {
-      var self = this;
-      this.$("div:first").slider({
-        min: this.get('min'),
-        max: this.get('max'),
-        step: this.get('step'),
-        slide: function(event, ui) {
-          self.set('value', ui.value);
-        }
-      });
-    },
-    update: function() {
-      var old_value = this.$("div:first").slider("value"),
-          new_value = parseInt(this.get('value'));
-      if (old_value != new_value) {
-        this.$("div:first").slider("value", new_value);
-      }
-    }.observes('value')
-  });
-  EB.SortableCollectionView = SC.CollectionView.extend({
-    tagName: "ul",
-    draggedStartPos: null,
-    didCreateElement: function() {
-      var self = this;
-      this.$().sortable({
-        start: function(event, ui) {
-          self.set('draggedStartPos', ui.item.index());
-        },
-        stop: function(event, ui) {
-          var oldIdx = self.get('draggedStartPos');
-          var newIdx = ui.item.index();
-          if (oldIdx != newIdx) {
-            var content = self.get('content');
-            self.propertyWillChange('content')
-            content.beginPropertyChanges();
-            var el = content.objectAt(oldIdx);
-            content = content.removeAt(oldIdx);
-            content = content.insertAt(newIdx, el);
-            content.endPropertyChanges();
-            self.propertyDidChange('content');
-          }
-        }
-      }).disableSelection();
-    }
-  });
-  Demo = SC.Application.create();
-  Demo.Tag = SC.Object.extend({
-    name: null
-  });
-  Demo.tagsController = SC.ArrayProxy.create({
-    content: [],
-    addTag: function(name) {
-      var tag = Demo.Tag.create({name: name});
-      this.pushObject(tag);
-    },
-    removeTag: function(e) {
-      this.removeObject(e.getPath('parentView.content'));
-    }
-  });
-  Demo.progressbarController = SC.Object.create({
-    progress: 20
-  });
-  Demo.sliderController = SC.Object.create({
-    value: 0
-  });
-  Demo.Slider = EB.Slider.extend({
-    valueBinding: "Demo.sliderController.value",
-    step: 10,
-    max: 50
-  });
-  Demo.sortableController = SC.ArrayProxy.create({
-    content: availableTags
-  });
   </script>
   <style type="text/css" media="screen">
     body { font-family: Helvetica; }
@@ -171,7 +28,7 @@
   
   <h2>Autocomplete w/ TemplateCollectionView:</h2>
   <script type="text/html">
-    {{view EB.AutocompleteTextField}}
+    {{view Demo.AutocompleteTextField}}
     {{#collection contentBinding="Demo.tagsController"}}
       {{content.name}} {{#view SC.Button target="Demo.tagsController" action="removeTag"}}Remove{{/view}}
     {{/collection}}
@@ -179,12 +36,12 @@
   
   <h2>Datepicker:</h2>
   <script type="text/html">
-    {{view EB.Datepicker}}
+    {{view JQueryUI.Datepicker}}
   </script>
   
   <h2>Progressbar:</h2>
   <script type="text/html">
-    {{view EB.Progressbar valueBinding="Demo.progressbarController.progress"}}
+    {{view JQueryUI.Progressbar valueBinding="Demo.progressbarController.progress"}}
     {{#view SC.TextField valueBinding="Demo.progressbarController.progress"}}
       <input type="text" style="width: 30px" {{bindAttr value="Demo.progressbarController.progress"}}>%
     {{/view}}
@@ -200,7 +57,7 @@
   
   <h2>SortableCollectionView:</h2>
   <script type="text/html">
-    {{#collection EB.SortableCollectionView contentBinding="Demo.sortableController"}}
+    {{#collection JQueryUI.SortableCollectionView contentBinding="Demo.sortableController" tagName="ol"}}
       {{content}}
     {{/collection}}
   </script>
