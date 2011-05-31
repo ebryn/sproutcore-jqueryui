@@ -106,8 +106,28 @@
   });
   EB.SortableCollectionView = SC.CollectionView.extend({
     tagName: "ul",
+    draggedStartPos: null,
     didCreateElement: function() {
-      this.$().sortable().disableSelection();
+      var self = this;
+      this.$().sortable({
+        start: function(event, ui) {
+          self.set('draggedStartPos', ui.item.index());
+        },
+        stop: function(event, ui) {
+          var oldIdx = self.get('draggedStartPos');
+          var newIdx = ui.item.index();
+          if (oldIdx != newIdx) {
+            var content = self.get('content');
+            self.propertyWillChange('content')
+            content.beginPropertyChanges();
+            var el = content.objectAt(oldIdx);
+            content = content.removeAt(oldIdx);
+            content = content.insertAt(newIdx, el);
+            content.endPropertyChanges();
+            self.propertyDidChange('content');
+          }
+        }
+      }).disableSelection();
     }
   });
   Demo = SC.Application.create();
@@ -135,6 +155,9 @@
     step: 10,
     max: 50
   });
+  Demo.sortableController = SC.ArrayProxy.create({
+    content: availableTags
+  });
   </script>
   <style type="text/css" media="screen">
     body { font-family: Helvetica; }
@@ -146,10 +169,10 @@
 <body>
   <h1>SproutCore 2.0 and jQuery UI example</h1>
   
-  <h2>Autocomplete w/ SortableCollectionView:</h2>
+  <h2>Autocomplete w/ TemplateCollectionView:</h2>
   <script type="text/html">
     {{view EB.AutocompleteTextField}}
-    {{#collection EB.SortableCollectionView contentBinding="Demo.tagsController"}}
+    {{#collection contentBinding="Demo.tagsController"}}
       {{content.name}} {{#view SC.Button target="Demo.tagsController" action="removeTag"}}Remove{{/view}}
     {{/collection}}
   </script>
@@ -175,5 +198,11 @@
     {{/view}}
   </script>
   
+  <h2>SortableCollectionView:</h2>
+  <script type="text/html">
+    {{#collection EB.SortableCollectionView contentBinding="Demo.sortableController"}}
+      {{content}}
+    {{/collection}}
+  </script>
 </body>
 </html>
