@@ -88,6 +88,8 @@ JQueryUI.SortableCollectionView = SC.CollectionView.extend({
         }
       }
     }).disableSelection();
+  }
+});
 
 JQueryUI.ResizableView = SC.View.extend({
   defaultTemplate: SC.Handlebars.compile('<div style="width: 100px; height: 100px; background-color: red;"></div>'),
