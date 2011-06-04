@@ -19,6 +19,7 @@
   <style type="text/css" media="screen">
     body { font-family: Helvetica; }
     input[type=text] { width: 300px; font-size: 12pt; }
+    .ui-slider, .ui-progressbar { width: 300px; }
     .ui-sortable li { cursor: move; }
     .ui-resizable { border: 1px solid black; }
   </style>
@@ -29,7 +30,7 @@
   
   <h2>Autocomplete w/ CollectionView:</h2>
   <script type="text/html">
-    {{view Demo.AutocompleteTextField}}
+    {{view Demo.AutocompleteTextField selectTarget="Demo.tagsController" selectAction="addTag"}}
     {{#collection contentBinding="Demo.tagsController"}}
       {{content.name}} {{#view SC.Button target="Demo.tagsController" action="removeTag"}}Remove{{/view}}
     {{/collection}}
