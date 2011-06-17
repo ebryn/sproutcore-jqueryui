@@ -94,7 +94,7 @@ JQueryUI.AutocompleteTextField = JQueryUI.TextField.extend({
 // Datepicker doesn't use the widget factory, so we can't use the JQueryUI.Widget mixin
 JQueryUI.Datepicker = SC.TextField.extend({
   placeholder: "",
-  didCreateElement: function() {
+  willInsertElement: function() {
     this.$('input').datepicker();
   }
 });
