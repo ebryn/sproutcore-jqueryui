@@ -9,7 +9,7 @@ JQueryUI.Widget = SC.Mixin.create({
     }
   },
   
-  didCreateElement: function() {
+  willInsertElement: function() {
     this._super();
 
     var options = this._gatherOptions();
