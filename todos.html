@@ -1,0 +1,57 @@
+<!doctype html>
+<!--[if lt IE 7 ]> <html lang="en" class="no-js ie6"> <![endif]--> <!--[if IE 7 ]>    <html lang="en" class="no-js ie7"> <![endif]--> <!--[if IE 8 ]>    <html lang="en" class="no-js ie8"> <![endif]--> <!--[if IE 9 ]>    <html lang="en" class="no-js ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title></title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="http://taitems.github.com/Aristo-jQuery-UI-Theme/css/Aristo/jquery-ui-1.8.7.custom.css" type="text/css" media="screen" title="no title" charset="utf-8">
+  <link rel="stylesheet" href="css/style.css?v=2">
+  <link rel="stylesheet" href="css/sproutcore-jqueryui.css">
+  <link rel="stylesheet" href="css/todos.css">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <h1>Todos</h1>
+  <script type="text/html">
+  {{view Todos.CreateTodoView id="new-todo" placeholder="What needs to be done?"}}
+
+  <!-- Insert this after the CreateTodoView and before the collection. -->
+  {{#view Todos.StatsView id="stats"}}
+    {{#view SC.Button classBinding="isActive"
+      target="Todos.todosController"
+      action="clearCompletedTodos"}}
+      Clear Completed Todos
+    {{/view}}
+    {{remainingString}} remaining
+  {{/view}}
+
+  {{view SC.Checkbox class="mark-all-done"
+    title="Mark All as Done"
+    valueBinding="Todos.todosController.allAreDone"}}
+
+  {{#collection JQueryUI.SortableCollectionView contentBinding="Todos.todosController" tagName="ul" itemClassBinding="content.isDone"}}
+    {{view SC.Checkbox titleBinding="parentView.content.title"
+        valueBinding="parentView.content.isDone"}}
+  {{/collection}}
+  </script>
+
+
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.js"></script>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.js"></script>
+  <script src="sproutcore-2.0.beta.1.js"></script>
+  <script type="text/javascript" src="sproutcore-jqueryui.js"></script>
+  <script src="todos.js"></script>
+</body>
+</html>
