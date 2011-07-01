@@ -62,6 +62,7 @@ Todos.CreateTodoView = JQueryUI.AutocompleteTextField.extend({
     if (value) {
       Todos.todosController.createTodo(value);
       this.set('value', '');
+      this.get('ui').close();
     }
   }
 });
