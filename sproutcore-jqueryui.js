@@ -9,16 +9,17 @@ JQueryUI.Widget = SC.Mixin.create({
     }
   },
   
-  willInsertElement: function() {
+  didInsertElement: function() {
     this._super();
 
-    var options = this._gatherOptions();
-    this._gatherEvents(options);
+    SC.run.schedule('render', this, function() {
+      var options = this._gatherOptions();
+      this._gatherEvents(options);
 
-    console.log(this.get('uiType'));
-    var ui = new jQuery.ui[this.get('uiType')](options, this.uiChildElement());
+      var ui = new jQuery.ui[this.get('uiType')](options, this.uiChildElement());
 
-    this.set('ui', ui);
+      this.set('ui', ui);
+    });
   },
 
   _gatherEvents: function(options) {
@@ -49,6 +50,7 @@ JQueryUI.Widget = SC.Mixin.create({
   _gatherOptions: function() {
     var uiOptions = this.get('uiOptions'), options = {};
 
+    options.sc_view = this; // FIXME: This there a better way to access the SC View from inside jQuery UI callbacks?
     uiOptions.forEach(function(key) {
       options[key] = this.get(key);
 
